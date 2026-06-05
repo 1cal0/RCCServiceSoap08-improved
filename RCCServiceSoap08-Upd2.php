@@ -5,12 +5,10 @@
 // made by nolanwhy
 
 /*
-    -------------------- Update 2 - 7/26/24 ---------------------
-    # Made a GitHub: https://github.com/nolanwhy/RCCServiceSoap08
-    # Project name is now RCCServiceSoap08
-    # New helloWorld function, no params
-    # New renderFix stuff
-    # Better code
+    -------------------- Update 3 - 05/06/2026 ---------------------
+    # fixed possible curl will hang forever if RCC is down
+    # fix where the URL passed to requestUrl() had missing "/" path. RCC expects "http://ip:port/" not "http://ip:port:"
+    # fix if $script contains <, >, or & it will break the XML
     -------------------------------------------------------------
 */
 
@@ -45,6 +43,7 @@ class RCCServiceSoap08 {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 
         $result = str_replace(
             [ "<ns1:value>", "</ns1:value>", "</ns1:OpenJobResult>", "<ns1:OpenJobResult>", "<ns1:type>", "</ns1:type>", "<ns1:table>", "</ns1:table>", "</ns1:OpenJobResult>", "</ns1:OpenJobResponse>", "</SOAP-ENV:Body>", "</SOAP-ENV:Envelope>" ],
@@ -83,14 +82,14 @@ class RCCServiceSoap08 {
                     <ns1:script>
                         <ns1:name>Script</ns1:name>
                         <ns1:script>
-                            '.$script.'
+                            ' . htmlspecialchars($script, ENT_XML1) . '
                         </ns1:script>
                     </ns1:script>
                 </ns1:OpenJob>
             </SOAP-ENV:Body>
         </SOAP-ENV:Envelope>';
 
-        return $this->requestUrl("http://".$this->ip.":".$this->port, $xml);
+        return $this->requestUrl("http://" . $this->ip . ":" . $this->port . "/", $xml);
     }
 
     function helloWorld() {
