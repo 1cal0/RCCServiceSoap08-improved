@@ -9,17 +9,35 @@
     # fixed possible curl will hang forever if RCC is down
     # fix where the URL passed to requestUrl() had missing "/" path. RCC expects "http://ip:port/" not "http://ip:port:"
     # fix if $script contains <, >, or & it will break the XML
+	# better readme file
+	# improved guide on how to use rccsoap08
     -------------------------------------------------------------
 */
 
 // HOW TO USE
 /*
-require_once("RCCServiceSoap08.php");
+require_once("your/path/here/RCCServiceSoap08.php");
+
 $RCCServiceSoap = new RCCServiceSoap08("127.0.0.1", 64989, "roblox.com", true);
-                                         rcc url     port     domain   renderFix
+// PARAMETERS:
+// "127.0.0.1")"  			= rcc url
+// 64989                  	= rcc port
+// "roblox.com"				= patched site domain
+// true                     = fix renders
+
+$result = $RCCServiceSoap->execScript('print("Hello World")', "job1", 5);
+echo $result;
+// PARAMETERS:
+// "print(\"Hello World\")"  = Lua script to execute
+// "job1"                    = job id (must be unique per request)
+// 1                         = job expiration time (seconds)
+
+
+// QUICK TEST FUNCTION
+echo $RCCServiceSoap->helloWorld();
 */
 
-// Make sure to check updates regularly!
+// make sure to check updates regularly!
 
 class RCCServiceSoap08 {
     public $ip;
